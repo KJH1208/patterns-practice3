@@ -1,19 +1,144 @@
 # 디자인 패턴 실습 프로젝트 (실습 3)
+> Vue 3 + TypeScript를 사용한 객체지향 디자인 패턴 심화 실습
 
-Vue 3 + TypeScript를 사용한 객체지향 디자인 패턴 실습 프로젝트입니다.
-
----
-
+> Builder, Proxy, Strategy 3가지 패턴 구현 및 학습
 ## 📚 목차
 
-- [1. Builder Pattern](#1-builder-pattern-생성-패턴)
-- [2. Proxy Pattern](#2-proxy-pattern-구조-패턴)
-- [3. Strategy Pattern](#3-strategy-pattern-행위-패턴)
+- [개요](#-개요)
+- [기본 예제 (6가지 패턴)](#-기본-예제-6가지-패턴)
+- [심화 예제 (3가지 패턴)](#-심화-예제-3가지-패턴)
+  - [1. Builder Pattern](#1-builder-pattern-생성-패턴)
+  - [2. Proxy Pattern](#2-proxy-pattern-구조-패턴)
+  - [3. Strategy Pattern](#3-strategy-pattern-행위-패턴)
+- [프로젝트 구조](#프로젝트-구조)
 - [설치 및 실행](#설치-및-실행)
 - [기술 스택](#기술-스택)
 
 ---
+## 🎯 개요
 
+이 프로젝트는 객체지향 디자인 패턴을 Vue 3와 TypeScript를 활용하여 실습합니다.
+
+**포함된 내용:**
+- 기본 예제: 6가지 핵심 디자인 패턴
+- 실습 구현: Builder, Proxy, Strategy 3가지 패턴의 상세 구현
+- 대화형 UI: 각 패턴의 동작을 시각적으로 이해
+- 완벽한 타입 안정성: TypeScript를 통한 안전한 코드
+
+---
+
+## 📖 기본 예제 (6가지 패턴)
+
+강의에서 제공된 6가지 핵심 디자인 패턴입니다.
+
+### 패턴 개요
+
+| # | 패턴 | 분류 | 설명 |
+|---|------|------|------|
+| 1️⃣ | **Singleton** | 생성 | 클래스의 인스턴스가 오직 하나만 존재하도록 보장 | 
+| 2️⃣ | **Factory Method** | 생성 | 객체 생성 로직을 서브클래스에 위임하여 분리 |
+| 3️⃣ | **Adapter** | 구조 | 호환되지 않는 인터페이스를 함께 작동하도록 변환 |
+| 4️⃣ | **Decorator** | 구조 | 객체에 동적으로 새로운 기능을 추가 | 
+| 5️⃣ | **Observer** | 행위 | 상태 변화를 관찰자들에게 통지 |
+| 6️⃣ | **Visitor** | 행위 | 알고리즘을 객체 구조에서 분리 |
+
+### 핵심 개념 요약
+
+#### 1️⃣ Singleton Pattern
+```typescript
+// 인스턴스가 오직 하나만 존재
+const instance1 = Singleton.getInstance();
+const instance2 = Singleton.getInstance();
+console.log(instance1 === instance2); // true
+```
+**사용 사례**: 로거, DB 연결, 설정 관리, 스레드 풀
+
+*Singleton Pattern 실행화면*
+![SingletonPattern](./screenshots/Singleton Pattern.png)
+---
+
+#### 2️⃣ Factory Method Pattern
+```typescript
+// 객체 생성을 메서드에 위임
+abstract class Creator {
+  abstract createProduct(): Product;
+}
+
+class ConcreteCreatorA extends Creator {
+  createProduct(): Product {
+    return new ConcreteProductA();
+  }
+}
+```
+**사용 사례**: 문서 생성, 결제 시스템, UI 컴포넌트
+
+*Factory Method Pattern 실행화면*
+![Factory Method Pattern](./screenshots/Factory Method Pattern.png)
+---
+
+#### 3️⃣ Adapter Pattern
+```typescript
+// 호환되지 않는 인터페이스 변환
+class Adapter implements NewInterface {
+  constructor(private adaptee: OldInterface) {}
+  request(): string {
+    return this.adaptee.specificRequest();
+  }
+}
+```
+**사용 사례**: 레거시 통합, 라이브러리 호환, API 변환
+
+*Adapter Pattern 실행화면*
+![Adapter Pattern](./screenshots/Adapter Pattern.png)
+---
+
+#### 4️⃣ Decorator Pattern
+```typescript
+// 동적으로 기능 추가
+let component: Component = new ConcreteComponent();
+component = new DecoratorA(component);
+component = new DecoratorB(component);
+```
+**사용 사례**: 파일 압축/암호화, UI 스타일, 로깅
+
+*Decorator Pattern 실행화면*
+![Decorator Pattern](./screenshots/Decorator Pattern.png)
+---
+
+#### 5️⃣ Observer Pattern
+```typescript
+// 상태 변화 자동 통지
+class Subject {
+  attach(observer: Observer): void { /* ... */ }
+  notify(): void { 
+    this.observers.forEach(obs => obs.update(this));
+  }
+}
+```
+**사용 사례**: 이벤트 시스템, 상태 관리, 뉴스 구독
+
+*Observer Pattern 실행화면*
+![Observer Pattern](./screenshots/Observer Pattern.png)
+---
+
+#### 6️⃣ Visitor Pattern
+```typescript
+// 알고리즘을 구조에서 분리
+interface Element {
+  accept(visitor: Visitor): void;
+}
+
+interface Visitor {
+  visit(element: Element): void;
+}
+```
+**사용 사례**: 컴파일러, 문서 처리, 세금 계산
+
+*Visitor Pattern 실행화면*
+![Visitor Pattern](./screenshots/Visitor Pattern.png)
+---
+📖 실습 구현
+---
 ## 1. Builder Pattern (생성 패턴)
 
 **설명**: 빌더 패턴은 복잡한 객체의 생성 과정을 단계별로 분리하여, 동일한 생성 과정으로 다양한 표현을 만들 수 있게 해주는 패턴입니다. 객체 생성 시 많은 매개변수가 필요하거나 생성 과정이 복잡할 때 유용합니다.
