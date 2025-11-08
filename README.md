@@ -54,7 +54,7 @@ console.log(instance1 === instance2); // true
 **사용 사례**: 로거, DB 연결, 설정 관리, 스레드 풀
 
 *Singleton Pattern 실행화면*
-![SingletonPattern](./screenshots/Singleton Pattern.png)
+![SingletonPattern](./screenshots/SingletonPattern.png)
 ---
 
 #### 2️⃣ Factory Method Pattern
@@ -73,7 +73,7 @@ class ConcreteCreatorA extends Creator {
 **사용 사례**: 문서 생성, 결제 시스템, UI 컴포넌트
 
 *Factory Method Pattern 실행화면*
-![Factory Method Pattern](./screenshots/Factory Method Pattern.png)
+![Factory Method Pattern](./screenshots/FactoryMethodPattern.png)
 ---
 
 #### 3️⃣ Adapter Pattern
@@ -89,7 +89,7 @@ class Adapter implements NewInterface {
 **사용 사례**: 레거시 통합, 라이브러리 호환, API 변환
 
 *Adapter Pattern 실행화면*
-![Adapter Pattern](./screenshots/Adapter Pattern.png)
+![Adapter Pattern](./screenshots/AdapterPattern.png)
 ---
 
 #### 4️⃣ Decorator Pattern
@@ -102,7 +102,7 @@ component = new DecoratorB(component);
 **사용 사례**: 파일 압축/암호화, UI 스타일, 로깅
 
 *Decorator Pattern 실행화면*
-![Decorator Pattern](./screenshots/Decorator Pattern.png)
+![Decorator Pattern](./screenshots/DecoratorPattern.png)
 ---
 
 #### 5️⃣ Observer Pattern
@@ -118,7 +118,7 @@ class Subject {
 **사용 사례**: 이벤트 시스템, 상태 관리, 뉴스 구독
 
 *Observer Pattern 실행화면*
-![Observer Pattern](./screenshots/Observer Pattern.png)
+![Observer Pattern](./screenshots/ObserverPattern.png)
 ---
 
 #### 6️⃣ Visitor Pattern
@@ -135,7 +135,7 @@ interface Visitor {
 **사용 사례**: 컴파일러, 문서 처리, 세금 계산
 
 *Visitor Pattern 실행화면*
-![Visitor Pattern](./screenshots/Visitor Pattern.png)
+![Visitor Pattern](./screenshots/VisitorPattern.png)
 ---
 📖 실습 구현
 ---
