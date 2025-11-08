@@ -1,45 +1,41 @@
 <template>
-  <div class="demo-section">
-    <h2>🛡️ Proxy Pattern Demo</h2>
-    <p class="description">객체 접근을 제어하고 캐싱하는 Proxy 패턴</p>
-
-    <div class="controls">
-      <button class="btn btn-access" @click="accessImage">🖼️ 이미지 접근</button>
-      <button class="btn btn-info" @click="showInfo">ℹ️ 정보 표시</button>
-      <button class="btn btn-clear" @click="resetImage">🔄 초기화</button>
+  <div class="demo-card">
+    <div class="card-header">
+      <h2>Proxy Pattern</h2>
+      <p>Control access and caching</p>
     </div>
 
-    <div class="info-panel">
-      <div class="info-item">
-        <span class="label">현재 이미지:</span>
-        <span class="value">{{ currentImage }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">접근 횟수:</span>
-        <span class="value">{{ accessCount }}/3</span>
-      </div>
-      <div class="info-item">
-        <span class="label">상태:</span>
-        <span class="value" :class="statusClass">{{ statusText }}</span>
-      </div>
-    </div>
-
-    <div class="log-section">
-      <h3>📋 실행 로그</h3>
-      <div class="log-container">
-        <div v-if="logs.length === 0" class="empty-log">로그가 없습니다</div>
-        <div v-for="(log, index) in logs" :key="index" class="log-item" :class="log.type">
-          {{ log.message }}
+    <div class="card-body">
+      <div class="status-grid">
+        <div class="status-box">
+          <span class="status-label">Image</span>
+          <span class="status-value">sample-photo.jpg</span>
+        </div>
+        <div class="status-box">
+          <span class="status-label">Access Count</span>
+          <span class="status-value">{{ accessCount }}/3</span>
+        </div>
+        <div class="status-box">
+          <span class="status-label">Status</span>
+          <span class="status-value" :class="statusClass">{{ statusText }}</span>
         </div>
       </div>
-      <button v-if="logs.length > 0" class="btn btn-small" @click="clearLogs">로그 지우기</button>
-    </div>
 
-    <div class="code-section">
-      <details>
-        <summary>💻 코드 보기</summary>
-        <pre><code>{{ codeExample }}</code></pre>
-      </details>
+      <div class="button-group">
+        <button class="apple-btn" @click="accessImage">Access</button>
+        <button class="apple-btn" @click="showInfo">Info</button>
+        <button class="apple-btn secondary" @click="resetImage">Reset</button>
+      </div>
+
+      <div class="log-section">
+        <div class="log-header">Activity Log</div>
+        <div class="log-container">
+          <div v-if="logs.length === 0" class="log-empty">No activity yet</div>
+          <div v-for="(log, index) in logs" :key="index" class="log-line" :class="log.type">
+            {{ log.message }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -51,12 +47,11 @@ import { ProxyImage } from '../../patterns/structural/Proxy';
 const proxyImage = ref<ProxyImage>(new ProxyImage('sample-photo.jpg'));
 const logs = ref<{ message: string; type: string }[]>([]);
 const accessCount = ref(0);
-const currentImage = ref('sample-photo.jpg');
 
 const statusText = computed(() => {
-  if (accessCount.value >= 3) return '❌ 접근 제한됨';
-  if (accessCount.value > 0) return '⚡ 캐시됨';
-  return '🔄 대기 중';
+  if (accessCount.value >= 3) return 'Denied';
+  if (accessCount.value > 0) return 'Cached';
+  return 'Waiting';
 });
 
 const statusClass = computed(() => {
@@ -66,249 +61,214 @@ const statusClass = computed(() => {
 });
 
 const addLog = (message: string, type: string = 'info') => {
-  const timestamp = new Date().toLocaleTimeString('ko-KR');
-  logs.value.push({
-    message: `[${timestamp}] ${message}`,
-    type
-  });
-  // 최대 10개까지만 표시
-  if (logs.value.length > 10) {
+  logs.value.push({ message, type });
+  if (logs.value.length > 5) {
     logs.value.shift();
   }
 };
 
 const accessImage = () => {
-  addLog('🖼️ 이미지 접근 시도...');
+  addLog('Attempting to access image...');
   proxyImage.value.display();
   accessCount.value++;
 
   if (accessCount.value <= 3) {
-    addLog(`✅ 접근 성공 (${accessCount.value}/3)`, 'success');
+    addLog(`✓ Access granted (${accessCount.value}/3)`, 'success');
   } else {
-    addLog('❌ 접근 제한됨', 'error');
+    addLog('✗ Access denied', 'error');
   }
 };
 
 const showInfo = () => {
   const info = proxyImage.value.getInfo();
-  addLog(`📊 ${info}`, 'info');
+  addLog(`${info}`, 'info');
 };
 
 const resetImage = () => {
   proxyImage.value = new ProxyImage('sample-photo.jpg');
   accessCount.value = 0;
-  addLog('🔄 이미지 초기화됨', 'info');
+  addLog('Image reset', 'info');
 };
-
-const clearLogs = () => {
-  logs.value = [];
-};
-
-const codeExample = `// Proxy 패턴 사용
-const proxy = new ProxyImage('photo.jpg');
-
-// 3번까지 접근 가능
-proxy.display(); // ✅ 접근 1
-proxy.display(); // ⚡ 캐시 사용
-proxy.display(); // ⚡ 캐시 사용
-proxy.display(); // ❌ 접근 제한`;
 </script>
 
 <style scoped>
-.demo-section {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  padding: 30px;
+.demo-card {
+  background: #ffffff;
   border-radius: 12px;
-  color: white;
-  margin-bottom: 30px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.demo-section h2 {
-  margin: 0 0 10px 0;
-  font-size: 28px;
+.card-header {
+  padding: 28px 28px 24px 28px;
+  border-bottom: 1px solid #f5f5f7;
 }
 
-.description {
-  margin: 5px 0 20px 0;
-  opacity: 0.9;
-  font-size: 14px;
+.card-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
 }
 
-.controls {
+.card-header p {
+  font-size: 13px;
+  color: #86868b;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.card-body {
+  padding: 24px 28px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.status-box {
+  background: #f5f5f7;
+  padding: 12px;
+  border-radius: 8px;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.btn {
+.status-label {
+  font-size: 11px;
+  color: #86868b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1d1d1f;
+  letter-spacing: -0.2px;
+}
+
+.status-value.waiting {
+  color: #f59e0b;
+}
+
+.status-value.cached {
+  color: #10b981;
+}
+
+.status-value.denied {
+  color: #ef4444;
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.apple-btn {
   padding: 10px 16px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  font-size: 14px;
-}
-
-.btn-access {
-  background-color: #4ecdc4;
-  color: white;
-}
-
-.btn-access:hover {
-  background-color: #45b7aa;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
-}
-
-.btn-info {
-  background-color: #95e1d3;
-  color: #333;
-}
-
-.btn-info:hover {
-  background-color: #7dd4c4;
-  transform: translateY(-2px);
-}
-
-.btn-clear {
-  background-color: rgba(255, 255, 255, 0.3);
-  color: white;
-}
-
-.btn-clear:hover {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.btn-small {
-  padding: 6px 12px;
-  font-size: 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.btn-small:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-.info-panel {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
+  background: #f5f5f7;
+  color: #1d1d1f;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
 }
 
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.apple-btn:hover {
+  background: #e8e8ed;
 }
 
-.info-item:last-child {
-  border-bottom: none;
+.apple-btn:active {
+  background: #d9d9dc;
 }
 
-.label {
-  font-weight: 600;
+.apple-btn.secondary {
+  background: transparent;
+  border: 1px solid #d2d2d7;
 }
 
-.value {
-  font-family: 'Courier New', monospace;
-  font-weight: 700;
-  padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-.value.waiting {
-  background-color: rgba(255, 193, 7, 0.4);
-}
-
-.value.cached {
-  background-color: rgba(76, 175, 80, 0.4);
-}
-
-.value.denied {
-  background-color: rgba(244, 67, 54, 0.4);
+.apple-btn.secondary:hover {
+  background: #f5f5f7;
+  border-color: #a1a1a6;
 }
 
 .log-section {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
+  background: #f5f5f7;
   border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 12px;
 }
 
-.log-section h3 {
-  margin: 0 0 15px 0;
-  font-size: 16px;
+.log-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
 }
 
 .log-container {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 15px;
+  background: #ffffff;
   border-radius: 6px;
+  padding: 10px;
+  min-height: 80px;
   max-height: 200px;
   overflow-y: auto;
-  margin-bottom: 10px;
 }
 
-.empty-log {
+.log-empty {
   text-align: center;
-  opacity: 0.6;
-  padding: 20px;
-  font-size: 12px;
-}
-
-.log-item {
-  font-family: 'Courier New', monospace;
+  color: #d2d2d7;
   font-size: 11px;
-  padding: 5px 0;
-  opacity: 0.9;
+  padding: 20px 0;
 }
 
-.log-item.success {
-  color: #7fff00;
+.log-line {
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-size: 11px;
+  padding: 4px 0;
+  color: #1d1d1f;
+  line-height: 1.4;
 }
 
-.log-item.error {
-  color: #ff6b6b;
+.log-line.success {
+  color: #10b981;
 }
 
-.log-item.info {
-  color: #87ceeb;
+.log-line.error {
+  color: #ef4444;
 }
 
-.code-section {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 6px;
+.log-line.info {
+  color: #0071e3;
 }
 
-.code-section details {
-  cursor: pointer;
-}
+@media (max-width: 768px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
 
-.code-section summary {
-  font-weight: 600;
-  padding: 10px;
-  user-select: none;
-}
+  .button-group {
+    grid-template-columns: 1fr;
+  }
 
-.code-section pre {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 15px;
-  border-radius: 4px;
-  overflow-x: auto;
-  margin-top: 10px;
-}
+  .card-header {
+    padding: 20px 20px 16px 20px;
+  }
 
-.code-section code {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.6;
+  .card-body {
+    padding: 16px 20px;
+  }
 }
 </style>
