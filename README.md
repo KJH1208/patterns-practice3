@@ -6,7 +6,7 @@
 
 - [개요](#-개요)
 - [기본 예제 (6가지 패턴)](#-기본-예제-6가지-패턴)
-- [심화 예제 (3가지 패턴)](#-심화-예제-3가지-패턴)
+- [실습 구현 (3가지 패턴)](#-실습-구현)
   - [1. Builder Pattern](#1-builder-pattern-생성-패턴)
   - [2. Proxy Pattern](#2-proxy-pattern-구조-패턴)
   - [3. Strategy Pattern](#3-strategy-pattern-행위-패턴)
@@ -137,8 +137,8 @@ interface Visitor {
 *Visitor Pattern 실행화면*
 ![Visitor Pattern](./screenshots/VisitorPattern.png)
 ---
-📖 실습 구현
----
+## 📖 실습 구현
+
 ## 1. Builder Pattern (생성 패턴)
 
 **설명**: 빌더 패턴은 복잡한 객체의 생성 과정을 단계별로 분리하여, 동일한 생성 과정으로 다양한 표현을 만들 수 있게 해주는 패턴입니다. 객체 생성 시 많은 매개변수가 필요하거나 생성 과정이 복잡할 때 유용합니다.
